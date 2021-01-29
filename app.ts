@@ -52,3 +52,4 @@ person.role.push("ADmen");
 person.role[1] = "asd";
 person.role[0] = 123;
 
+//Next: Section 2, 20. Working with enums
