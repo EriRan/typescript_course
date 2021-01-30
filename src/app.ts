@@ -7,7 +7,7 @@ console.log(userName);
 const button = document.querySelector("button")!;
 
 button.addEventListener("click", () => {
-  console.log("Clicked!");
+  console.log("Clicked MMM!");
 });
 
 //Map needs to be added to lib
