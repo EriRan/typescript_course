@@ -41,6 +41,32 @@ class Department {
   }
 }
 
+//Let's do some inheritance
+class ITDepartment extends Department {
+
+  admins: string[];
+
+  constructor(id: string, admins: string[]) {
+    super(id, "IT Department");
+    this.admins = admins;
+  }
+}
+
+class AccountingDepartment extends Department {
+
+  constructor(id: string, public reports: string[]) {
+    super(id, "IT Department");
+  }
+
+  addReport(text: string) {
+    this.reports.push(text);
+  }
+
+  getReports(this: AccountingDepartment) {
+    console.log(this.reports);
+  }
+}
+
 const coolClub = new Department("CC", "Cool Club");
 coolClub.addEmployee("Robert");
 coolClub.addEmployee("Standard");
@@ -53,3 +79,9 @@ coolClub.describe();
 //The object does have the name variable, so we will end up with undefined as the name
 //const coolClubClone = { name: "Hardcore Club", describe: coolClub.describe}
 //coolClubClone.describe();
+
+const itGuys = new ITDepartment("ITGOD", ["Bob", "Ross"]);
+console.log(itGuys);
+
+const accountingPersons = new AccountingDepartment("ACC", ["We got money today", "We lost money today"]);
+console.log(accountingPersons);
