@@ -2,8 +2,8 @@
 const userName = "Max Milvana";
 
 //Scope
-let age = 30;
-age = 26;
+//let age = 30;
+//age = 26;
 
 //You should not use var anymore
 //Available at the scope it has been defined at
@@ -29,17 +29,17 @@ function add(a: number, b: number) {
 //If you only add one expression, the curly braces can be omitted
 //Default parameteres also available
 //-Defaults should be set from the right because the order matters
-const addFunction = (number1: number = 1, number2: number = 1) =>
-  number1 + number2;
-const oneParameterFunction: (a: number | string) => void = (output) =>
-  console.log(output);
+// const addFunction = (number1: number = 1, number2: number = 1) =>
+//   number1 + number2;
+// const oneParameterFunction: (a: number | string) => void = (output) =>
+//   console.log(output);
 
-console.log(addFunction(5, 6));
-//COOL WITH DEFAULT VARIABLES YOU CAN CALL THEM LIKE THIS!
-//This is really nice!
-console.log("With default variable in one: " + addFunction(10));
-console.log("With only default variables: " + addFunction());
-oneParameterFunction("22222");
+// console.log(addFunction(5, 6));
+// //COOL WITH DEFAULT VARIABLES YOU CAN CALL THEM LIKE THIS!
+// //This is really nice!
+// console.log("With default variable in one: " + addFunction(10));
+// console.log("With only default variables: " + addFunction());
+// oneParameterFunction("22222");
 
 const button = document.querySelector("button");
 if (button) {
@@ -55,7 +55,7 @@ const activeHobbies = ["Hiking"];
 activeHobbies.push(...hobbies);
 
 const person = {
-  name: "Bob",
+  firstName: "Bob",
   age: 222,
 };
 
@@ -65,4 +65,24 @@ const person = {
 const copiedPerson = { ...person };
 
 //Gadrombo
+//This way we could also define the amount of arguments
+// const addFunction = (...numbers: [number, number, number]) => {
+const addFunction = (...numbers: number[]) => {
+  return numbers.reduce((currentResult, currentValue) => {
+    return currentResult + currentValue;
+  }, 0);
+};
 
+const addedNumbers = addFunction(5, 2, 3, 34, 4, 4, 3, 3, 3.123, 2);
+//What a strange name
+console.log("Rest parameters result: ", addedNumbers);
+
+//Array and object destructuring
+const [hobby1, hobby2, ...remaining] = hobbies;
+console.log(hobby1, hobby2, remaining);
+
+//These have to be property names
+//This is in Javascript too
+const {firstName : coolName, age : dreamAge} = person;
+
+console.log(coolName, dreamAge);
