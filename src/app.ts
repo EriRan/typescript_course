@@ -21,24 +21,37 @@ function Logger(logString: string) {
   };
 }
 
+//Decorators can also return values. The type of return value depends on the decorator
+//Can use a decorator to replace the old class with an extended version of the original
+//Oh boy this is a lot to take in
+
+//WTF
+//This kind of structure makes it so that the function is called when the object is instantiated
 function WithTemplate(template: string, hookId: string) {
   console.log("With template activating");
   //Underscore as a parameter name: I am aware of it but I won't use it
-  return function (constructor: any) {
-    console.log("WithTemplate function called");
-    const hookElement = document.getElementById(hookId);
-    const person = new constructor();
-    if (hookElement) {
-      //wtf is this ok? I thought this was a bad practice
-      //hookElement.innerHTML = template;
-      //Can grab the person name from the object being constructed
-      //Construction still happens later as well.
-      hookElement.innerHTML = template;
-      hookElement.querySelector("h1")!.textContent = person.name;
+  return function<T extends {new(...args: any[]): {name: string}}> (originalConstructor: T) {
+    //Return new constructor function
+    //This extends the original constructor?
+    //This way the logic should happen only when the instanciation is done
+    return class extends originalConstructor {
+      constructor(..._: any[]) {
+        //This calls the original constructor
+        super();
 
-      //Can I modify it? No
-      person.name = "Hacked person";
-    }
+        //Then we do some extra logic on top of calling the original constructor
+        console.log("WithTemplate function called");
+        const hookElement = document.getElementById(hookId);
+        if (hookElement) {
+          //wtf is this ok? I thought this was a bad practice
+          //hookElement.innerHTML = template;
+          //Can grab the person name from the object being constructed
+          //Construction still happens later as well.
+          hookElement.innerHTML = template;
+          hookElement.querySelector("h1")!.textContent = this.name;
+        }
+      }
+    };
   };
 }
 
@@ -66,7 +79,6 @@ class Person {
 //It is only activated if the annotation is there
 
 const person = new Person();
-
 console.log(person);
 
 //Where else can we add decorators to?
@@ -85,7 +97,11 @@ function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
 }
 
 //Method decorator
-function Log3(target: any, name: string | Symbol, descriptor: PropertyDescriptor ) {
+function Log3(
+  target: any,
+  name: string | Symbol,
+  descriptor: PropertyDescriptor
+) {
   console.log("Method decorator");
   console.log(target);
   console.log(name);
@@ -93,7 +109,7 @@ function Log3(target: any, name: string | Symbol, descriptor: PropertyDescriptor
 }
 
 //Name is the name of the method where the parameter is used
-function Log4(target: any, methodName: string | Symbol, position: number ) {
+function Log4(target: any, methodName: string | Symbol, position: number) {
   console.log("Parameter decorator");
   console.log(target);
   console.log(methodName);
