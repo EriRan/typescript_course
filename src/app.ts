@@ -78,3 +78,81 @@ function extractAndConvert<T extends object, U extends keyof T>(object: T, key: 
 console.log(extractAndConvert({name: "Robert Schneider"}, "name"));
 
 //Generic classes
+//Type parameter in the constructor
+class DataStorage<T extends string | number | boolean> {
+  private data: T[] = [];
+
+  addItem(item: T) {
+    this.data.push(item);
+  }
+
+  removeItem(item: T) {
+    let foundKey = this.data.indexOf(item);
+    if (foundKey !== -1) {
+      this.data.splice(foundKey, 1);
+    }
+    return;
+  }
+
+  //Return a copy of the array
+  //Three dots
+  getItems() {
+    return [...this.data];
+  }
+}
+
+const textStorage = new DataStorage<string>();
+//Storage where you can store anything
+const anyStorage = new DataStorage();
+
+textStorage.addItem("GOOD");
+console.log("Before remove");
+console.log( textStorage)
+//Not allowed
+//textStorage.addItem(123);
+console.log("After remove");
+textStorage.removeItem("GOOD");
+console.log(textStorage)
+
+//Let's try out anyStorage
+anyStorage.addItem(123);
+anyStorage.addItem("STRING VALUE");
+
+console.log(anyStorage);
+
+const numberStorage = new DataStorage<number>();
+//Not allowed
+//numberStorage.addItem("asd");
+
+numberStorage.addItem(1212123);
+
+/*
+//RIP object storages
+
+const objectStorage = new DataStorage<object>();
+
+objectStorage.addItem({name: "Robert"});
+let robertObject = {name: "Roibos"};
+objectStorage.addItem(robertObject);
+
+//This is tecnically a brand new object and has a different address
+objectStorage.removeItem(robertObject);
+
+//This ain't good. It removes the first object!!!
+//This happened because the indexOf returned -1 which caused the splice to remove the last object in the array.
+//Fixed this by not removing when the returned value is -1
+//Object has to be removed with a reference to the same object for the indexOf to work!
+//Exact same object!
+console.log("Situation after attempting to remove from object storage");
+console.log(objectStorage);
+
+//Objects are reference types
+*/
+
+
+//Summary
+//Generic types are cool
+//Flexibility with constraints
+//
+
+//Generic utility types
