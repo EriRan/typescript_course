@@ -13,16 +13,19 @@
 //Decorators execute when the class is defined
 //They run when Javascript finds the class definition
 function Logger(logString: string) {
+  console.log("Logger activating");
   return function (constructor: Function) {
+    console.log("Logger function called");
     console.log(logString);
     console.log(constructor);
   };
 }
 
 function WithTemplate(template: string, hookId: string) {
-  console.log("Decorator activating");
+  console.log("With template activating");
   //Underscore as a parameter name: I am aware of it but I won't use it
-  return function(constructor: any) {
+  return function (constructor: any) {
+    console.log("WithTemplate function called");
     const hookElement = document.getElementById(hookId);
     const person = new constructor();
     if (hookElement) {
@@ -36,16 +39,18 @@ function WithTemplate(template: string, hookId: string) {
       //Can I modify it? No
       person.name = "Hacked person";
     }
-  }
+  };
 }
 
 //We are creating decorator functions with a tool that exposes them to other developers
 //Could they also be called interceptors? Act when something is built and then do something with the build object
 
-
 //Pointing at a decorator
 //We can pass values to the annotation which in turn are used at the decorator factory?
+//Decorators seem to activate depending on the order of the annotations
+//Functions executed bottoms up
 @WithTemplate("<h1>My person object</h1>", "app")
+@Logger("Logging!")
 class Person {
   name = "Rondo of Lomboc";
 
@@ -63,3 +68,38 @@ class Person {
 const person = new Person();
 
 console.log(person);
+
+//Where else can we add decorators to?
+//Oh my god the js code looks horrible
+
+function Log(target: any, propertyName: string | Symbol) {
+  console.log("Property decorator");
+  console.log(target, propertyName);
+}
+
+//I really need some real code examples. I don't understand where is this useful at
+class Product {
+  //This executes when class definition is registered with Javascript
+  @Log
+  title: string;
+  private _price: number;
+
+  set price(value: number) {
+    if (value > 0 ) {
+      this._price = value;
+    } else {
+      throw new Error("Invalid price. Should be above zero");
+    }
+  }
+
+  constructor(title: string, price: number) {
+    this.title = title;
+    this._price = price;
+  }
+
+  getPriceWithTax(tax: number) {
+    return this._price * (1 + tax);
+  }
+
+}
+
