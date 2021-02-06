@@ -30,7 +30,9 @@ function Logger(logString: string) {
 function WithTemplate(template: string, hookId: string) {
   console.log("With template activating");
   //Underscore as a parameter name: I am aware of it but I won't use it
-  return function<T extends {new(...args: any[]): {name: string}}> (originalConstructor: T) {
+  return function <T extends { new (...args: any[]): { name: string } }>(
+    originalConstructor: T
+  ) {
     //Return new constructor function
     //This extends the original constructor?
     //This way the logic should happen only when the instanciation is done
@@ -89,6 +91,7 @@ function Log(target: any, propertyName: string | Symbol) {
   console.log(target, propertyName);
 }
 
+//Can control the property descriptor by returning the values inside an object here
 function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
   console.log("Accessor decorator");
   console.log(target);
@@ -156,3 +159,54 @@ const product = new Product("Energy drink", 2.2);
 
 //Some libraries make heavy use of decorators
 //Maybe that will enlighten me
+
+//Return values are not supported for some accessors
+//Log2 and Log3 == setter and method decorator
+
+//Property descriptors are in vanilla Javascript
+//-Writeable
+//-Configurable
+//-Enumerable == can be for looped
+
+///Old methods configuration will be replaced
+function Autobind(
+  _: any,
+  _2: string | Symbol | number,
+  descriptor: PropertyDescriptor
+) {
+  //Get the original method
+  const originalMethod = descriptor.value;
+  const adjustedDescriptor: PropertyDescriptor = {
+    configurable: true,
+    enumerable: false,
+    //Extra logic when users try to access this property
+    //Getter is triggered by the concrete method
+    //This is some kind of extra layer
+    get() {
+      const boundFunction = originalMethod.bind(this);
+      return boundFunction;
+    },
+  };
+  return adjustedDescriptor;
+}
+
+class Printer {
+  message = "This works!";
+
+  @Autobind
+  showMessage() {
+    //this does not have the same context when it is called from an event listener
+    //bind is the traditional method to handle this
+    //Let's do this instead with a decorator
+    //WOWWW
+    console.log(this.message);
+  }
+}
+
+const p = new Printer();
+
+const button = document.querySelector("button")!;
+button.addEventListener("click", p.showMessage);
+
+//I didn't understand anything
+//Ok I understood what it does but I don't understand how it did it
