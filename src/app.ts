@@ -129,6 +129,14 @@ class Product {
   }
 }
 
+//Decorator run order
+//Decorator not ran at instanciation, executed when the class is defined
+//Decorators allow you to do behind the scenes setup
+//They are just a function that executes when a class is defined
+//Do some behind the scenes work
+
+//Could store the decorator in some data structure
+const product = new Product("Energy drink", 2.2);
 
 //Some libraries make heavy use of decorators
 //Maybe that will enlighten me
