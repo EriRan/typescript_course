@@ -77,6 +77,29 @@ function Log(target: any, propertyName: string | Symbol) {
   console.log(target, propertyName);
 }
 
+function Log2(target: any, name: string, descriptor: PropertyDescriptor) {
+  console.log("Accessor decorator");
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
+
+//Method decorator
+function Log3(target: any, name: string | Symbol, descriptor: PropertyDescriptor ) {
+  console.log("Method decorator");
+  console.log(target);
+  console.log(name);
+  console.log(descriptor);
+}
+
+//Name is the name of the method where the parameter is used
+function Log4(target: any, methodName: string | Symbol, position: number ) {
+  console.log("Parameter decorator");
+  console.log(target);
+  console.log(methodName);
+  console.log(position);
+}
+
 //I really need some real code examples. I don't understand where is this useful at
 class Product {
   //This executes when class definition is registered with Javascript
@@ -84,8 +107,10 @@ class Product {
   title: string;
   private _price: number;
 
+  //Accessor decorator here
+  @Log2
   set price(value: number) {
-    if (value > 0 ) {
+    if (value > 0) {
       this._price = value;
     } else {
       throw new Error("Invalid price. Should be above zero");
@@ -97,9 +122,13 @@ class Product {
     this._price = price;
   }
 
-  getPriceWithTax(tax: number) {
+  //Method decorator
+  @Log3
+  getPriceWithTax(@Log4 tax: number) {
     return this._price * (1 + tax);
   }
-
 }
 
+
+//Some libraries make heavy use of decorators
+//Maybe that will enlighten me
