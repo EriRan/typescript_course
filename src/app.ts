@@ -79,6 +79,11 @@ console.log(extractAndConvert({name: "Robert Schneider"}, "name"));
 
 //Generic classes
 //Type parameter in the constructor
+//(string | number | boolean)[] would be a mixed array
+//Here: you got to choose the type once
+//Union type: any of the types is fine
+//Causes problems in the methods. Would have to implement separate handling
+//You want union types when you want to be flexible with the provided types. Generic types lock in a type
 class DataStorage<T extends string | number | boolean> {
   private data: T[] = [];
 
@@ -181,3 +186,5 @@ const names: Readonly<string[]> = ["Robert", "Hunter"];
 //names.pop();
 
 //Generic types vs. union types
+
+//Functions can have generic types
