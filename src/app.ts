@@ -156,3 +156,28 @@ console.log(objectStorage);
 //
 
 //Generic utility types
+
+interface CourseGoal {
+  title: string;
+  description: string;
+  completeUntil: Date;
+}
+
+function createCourseGoal(title: string, description: string, completeUntil: Date): CourseGoal {
+  //This is an object that in the end will be a course goal
+  //Make object types variables to be temporarily optional
+  let courseGoal: Partial<CourseGoal> = {};
+  courseGoal.title = title;
+  courseGoal.description = description;
+  courseGoal.completeUntil = completeUntil;
+  //Partial construction is finished with a type cast
+  return courseGoal as CourseGoal;
+}
+
+//Read only array
+const names: Readonly<string[]> = ["Robert", "Hunter"];
+//Not allowed with read only
+//names.push("Combert");
+//names.pop();
+
+//Generic types vs. union types
