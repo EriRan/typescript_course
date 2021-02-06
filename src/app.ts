@@ -210,3 +210,89 @@ button.addEventListener("click", p.showMessage);
 
 //I didn't understand anything
 //Ok I understood what it does but I don't understand how it did it
+
+//Decorators for validation
+//We want a validation that checks that the course has all the input required
+//I don't fully understand what is going on in here. Javascript property descriptors are in use somehow
+
+interface ValidatorConfig {
+  [property: string]: {
+    [validatableProperty: string]: string[]; //required, positive
+  };
+}
+
+const registeredValidators: ValidatorConfig = {};
+
+function Required(target: any, propertyName: string) {
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propertyName]: ["required"],
+  };
+}
+
+function PositiveNumber(target: any, propertyName: string) {
+  registeredValidators[target.constructor.name] = {
+    ...registeredValidators[target.constructor.name],
+    [propertyName]: ["positive"],
+  };
+}
+
+function validate(obj: any) {
+  const objValidatorConfig = registeredValidators[obj.constructor.name];
+  if (!objValidatorConfig) {
+    return true;
+  }
+  let isValid = true;
+  for (const prop in objValidatorConfig) {
+    if (!objValidatorConfig || !prop) {
+      continue;
+    }
+    const propertyToBeValidated = objValidatorConfig[prop];
+    if (!propertyToBeValidated) {
+      console.log("Property to be validated was undefined!");
+      continue;
+    }
+    for (const validator of propertyToBeValidated) {
+      switch (validator) {
+        case "required":
+          isValid = isValid && !!obj[prop];
+          break;
+        case "positive":
+          isValid = isValid && obj[prop] > 0;
+          break;
+        default:
+          console.log("Unknown validator:" + validator);
+          return false;
+      }
+    }
+  }
+  return isValid;
+}
+
+class Course {
+  @Required
+  title: string;
+  @PositiveNumber
+  price: number;
+
+  constructor(title: string, price: number) {
+    this.title = title;
+    this.price = price;
+  }
+}
+
+const courseForm = document.querySelector("form")!;
+courseForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const titleElement = document.getElementById("title") as HTMLInputElement;
+  const priceElement = document.getElementById("price") as HTMLInputElement;
+
+  const title = titleElement.value;
+  const price = +priceElement.value;
+
+  const createdCourse = new Course(title, price);
+  if (!validate(createdCourse)) {
+    alert("Invalid input!");
+  }
+  console.log(createdCourse);
+});
