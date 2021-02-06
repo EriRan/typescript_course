@@ -214,15 +214,18 @@ button.addEventListener("click", p.showMessage);
 //Decorators for validation
 //We want a validation that checks that the course has all the input required
 //I don't fully understand what is going on in here. Javascript property descriptors are in use somehow
+//I get the big picture but not the details
 
 interface ValidatorConfig {
   [property: string]: {
+    //This is kind of a map
     [validatableProperty: string]: string[]; //required, positive
   };
 }
 
 const registeredValidators: ValidatorConfig = {};
 
+//Some kind of map is being made
 function Required(target: any, propertyName: string) {
   registeredValidators[target.constructor.name] = {
     ...registeredValidators[target.constructor.name],
@@ -233,11 +236,14 @@ function Required(target: any, propertyName: string) {
 function PositiveNumber(target: any, propertyName: string) {
   registeredValidators[target.constructor.name] = {
     ...registeredValidators[target.constructor.name],
+    //Key and value
+    //He did mention a key
     [propertyName]: ["positive"],
   };
 }
 
 function validate(obj: any) {
+  console.log(registeredValidators);
   const objValidatorConfig = registeredValidators[obj.constructor.name];
   if (!objValidatorConfig) {
     return true;
