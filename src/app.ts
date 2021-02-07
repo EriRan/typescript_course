@@ -7,11 +7,31 @@
 //We need to get projects fromm input ot list
 //Let's make a class that manages the state of the application like in React!!
 
+//Project type
+//We should tie project under a concrete class
+
+enum ProjectStatus {
+  ACTIVE,
+  FINISHED,
+}
+
+class Project {
+  constructor(
+    public id: string,
+    public title: string,
+    public description: string,
+    public peopleCount: number,
+    public status: ProjectStatus
+  ) {}
+}
+
 //Project state management
+//Just a bunch of functions
+type Listener = (items: Project[]) => void;
 
 class ProjectState {
-  private projects: any[] = [];
-  private listeners: any[] = [];
+  private projects: Project[] = [];
+  private listeners: Listener[] = [];
   private static instance: ProjectState;
 
   private constructor() {}
@@ -25,13 +45,14 @@ class ProjectState {
   }
 
   addProject(title: string, description: string, numberOfPeople: number) {
-    const newProject = {
-      //Not a perfect solution for the id but it will do
-      id: Math.random().toString(),
-      title: title,
-      description: description,
-      people: numberOfPeople,
-    };
+    const newProject = new Project(
+      Math.random().toString(),
+      title,
+      description,
+      numberOfPeople,
+      ProjectStatus.ACTIVE
+    );
+
     this.projects.push(newProject);
     for (const listenerFunction of this.listeners) {
       //Return a copy of the array
@@ -39,7 +60,7 @@ class ProjectState {
     }
   }
 
-  addListener(listenerFunction: Function) {
+  addListener(listenerFunction: Listener) {
     this.listeners.push(listenerFunction);
   }
 }
@@ -107,7 +128,7 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   sectionElement: HTMLElement;
-  assignedProjects: any[];
+  assignedProjects: Project[];
 
   //Creation of a type variable happens here in the parameters
   constructor(private type: "active" | "finished") {
@@ -221,7 +242,7 @@ class ProjectInput {
       max: 5,
     };
 
-    //This is crap. Let's improve it in a later lecture
+    //This is slightly less crappy
     if (
       !validate(titleValidatable) ||
       !validate(descriptionValidatable) ||
