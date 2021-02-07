@@ -131,6 +131,7 @@ class ProjectList {
   assignedProjects: Project[];
 
   //Creation of a type variable happens here in the parameters
+  //Need to use string literal here. Enum value not possible
   constructor(private type: "active" | "finished") {
     this.templateElement = document.getElementById(
       "project-list"
@@ -147,8 +148,14 @@ class ProjectList {
 
     this.sectionElement.id = `${this.type}-projects`;
 
-    projectState.addListener((projects: any[]) => {
-      this.assignedProjects = projects;
+    projectState.addListener((projects: Project[]) => {
+      const relevantProjects = projects.filter((project) => {
+        if (this.type === "active") {
+          return project.status == ProjectStatus.ACTIVE;
+        }
+        return project.status == ProjectStatus.FINISHED;
+      });
+      this.assignedProjects = relevantProjects;
       this.renderProjects();
     });
     this.attach();
@@ -159,6 +166,8 @@ class ProjectList {
     const listElement = document.getElementById(
       `${this.type}-projects-list`
     )! as HTMLUListElement;
+    //Reset the html content of the list
+    listElement.innerHTML = "";
     for (const projectItem of this.assignedProjects) {
       const listItem = document.createElement("li");
       listItem.textContent = projectItem.title;
