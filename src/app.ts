@@ -4,6 +4,48 @@
 //index.html and a css was provided. We need to write some code to make it all work
 //tsc -w == Quick way to run tsc --watch
 
+//We need to get projects fromm input ot list
+//Let's make a class that manages the state of the application like in React!!
+
+//Project state management
+
+class ProjectState {
+  private projects: any[] = [];
+  private listeners: any[] = [];
+  private static instance: ProjectState;
+
+  private constructor() {}
+
+  static getInstance() {
+    if (this.instance) {
+      return this.instance;
+    }
+    this.instance = new ProjectState();
+    return this.instance;
+  }
+
+  addProject(title: string, description: string, numberOfPeople: number) {
+    const newProject = {
+      //Not a perfect solution for the id but it will do
+      id: Math.random().toString(),
+      title: title,
+      description: description,
+      people: numberOfPeople,
+    };
+    this.projects.push(newProject);
+    for (const listenerFunction of this.listeners) {
+      //Return a copy of the array
+      listenerFunction(this.projects.slice());
+    }
+  }
+
+  addListener(listenerFunction: Function) {
+    this.listeners.push(listenerFunction);
+  }
+}
+
+const projectState = ProjectState.getInstance();
+
 //Validation
 interface Validatable {
   value: string | number;
@@ -65,23 +107,42 @@ class ProjectList {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLDivElement;
   sectionElement: HTMLElement;
+  assignedProjects: any[];
 
+  //Creation of a type variable happens here in the parameters
   constructor(private type: "active" | "finished") {
     this.templateElement = document.getElementById(
       "project-list"
     )! as HTMLTemplateElement;
     this.hostElement = document.getElementById("app")! as HTMLDivElement;
+    this.assignedProjects = [];
 
-    //Import content with deep clode (Clones all nested objects?)
+    //Import content with deep clone (Clones all nested objects?)
     const importedNode = document.importNode(
       this.templateElement.content,
       true
     );
     this.sectionElement = importedNode.firstElementChild as HTMLElement;
-    //WHy is this not done in the html file....?
+
     this.sectionElement.id = `${this.type}-projects`;
+
+    projectState.addListener((projects: any[]) => {
+      this.assignedProjects = projects;
+      this.renderProjects();
+    });
     this.attach();
     this.renderContent();
+  }
+
+  private renderProjects() {
+    const listElement = document.getElementById(
+      `${this.type}-projects-list`
+    )! as HTMLUListElement;
+    for (const projectItem of this.assignedProjects) {
+      const listItem = document.createElement("li");
+      listItem.textContent = projectItem.title;
+      listElement.appendChild(listItem);
+    }
   }
 
   private renderContent() {
@@ -113,7 +174,7 @@ class ProjectInput {
     )! as HTMLTemplateElement;
     this.hostElement = document.getElementById("app")! as HTMLDivElement;
 
-    //Import content with deep clode (Clones all nested objects?)
+    //Import content with deep clone (Clones all nested objects?)
     const importedNode = document.importNode(
       this.templateElement.content,
       true
@@ -186,6 +247,7 @@ class ProjectInput {
     if (Array.isArray(userInput)) {
       const [title, description, people] = userInput;
       console.log(title, description, people);
+      projectState.addProject(title, description, people);
       this.clearInputs();
     }
   }
