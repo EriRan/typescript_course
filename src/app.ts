@@ -60,6 +60,42 @@ function Autobind(
   return adjustedDescriptor;
 }
 
+//The list class
+class ProjectList {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  sectionElement: HTMLElement;
+
+  constructor(private type: "active" | "finished") {
+    this.templateElement = document.getElementById(
+      "project-list"
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app")! as HTMLDivElement;
+
+    //Import content with deep clode (Clones all nested objects?)
+    const importedNode = document.importNode(
+      this.templateElement.content,
+      true
+    );
+    this.sectionElement = importedNode.firstElementChild as HTMLElement;
+    //WHy is this not done in the html file....?
+    this.sectionElement.id = `${this.type}-projects`;
+    this.attach();
+    this.renderContent();
+  }
+
+  private renderContent() {
+    const listId = `${this.type}-projects-list`;
+    this.sectionElement.querySelector("ul")!.id = listId;
+    this.sectionElement.querySelector("h2")!.textContent =
+      this.type.toUpperCase() + " PROJECTS";
+  }
+
+  private attach() {
+    this.hostElement.insertAdjacentElement("beforeend", this.sectionElement);
+  }
+}
+
 //Get access to the template form
 class ProjectInput {
   //This would be better to be called as formTemplate
@@ -164,3 +200,5 @@ class ProjectInput {
 }
 
 const projectInput = new ProjectInput();
+const activeProjectsList = new ProjectList("active");
+const finishedProjectsList = new ProjectList("finished");
