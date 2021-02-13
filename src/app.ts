@@ -77,6 +77,19 @@ class ProjectState extends State<Project> {
     );
 
     this.projects.push(newProject);
+    this.updateListeners();
+  }
+
+  //Move project from one list to another
+  moveProject(projectId: string, newStatus: ProjectStatus) {
+    const project = this.projects.find((project) => project.id === projectId);
+    if (project && project.status !== newStatus) {
+      project.status = newStatus;
+      this.updateListeners();
+    }
+  }
+
+  private updateListeners() {
     for (const listenerFunction of this.listeners) {
       //Return a copy of the array
       listenerFunction(this.projects.slice());
@@ -218,7 +231,9 @@ class ProjectItem
 
   @Autobind
   dragStartHandler(event: DragEvent) {
-    console.log(event);
+    //Add id so that we can later fetch it
+    event.dataTransfer!.setData("text/plain", this.project.id);
+    event.dataTransfer!.effectAllowed = "move";
   }
   @Autobind
   dragEndHandler(event: DragEvent) {
@@ -227,7 +242,9 @@ class ProjectItem
 }
 
 //The list class
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList
+  extends Component<HTMLDivElement, HTMLElement>
+  implements DragTarget {
   assignedProjects: Project[];
 
   //Creation of a type variable happens here in the parameters
@@ -252,6 +269,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   }
 
   configure() {
+    this.element.addEventListener("dragover", this.dragOverHandler);
+    this.element.addEventListener("drop", this.dropHandler);
+    this.element.addEventListener("dragleave", this.dragLeaveHandler);
+
     projectState.addListener((projects: Project[]) => {
       const relevantProjects = projects.filter((project) => {
         if (this.type === "active") {
@@ -269,6 +290,32 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     this.element.querySelector("ul")!.id = listId;
     this.element.querySelector("h2")!.textContent =
       this.type.toUpperCase() + " PROJECTS";
+  }
+
+  @Autobind
+  dragOverHandler(event: DragEvent) {
+    if (event.dataTransfer && event.dataTransfer.types[0] === "text/plain") {
+      //Default: To not allow dropping. Prevent allows it
+      event.preventDefault();
+      const listElement = this.element.querySelector("ul")!;
+      //Vanilla javascript feature to add a class that has some css tied to it
+      listElement.classList.add("droppable");
+    }
+  }
+  @Autobind
+  dropHandler(event: DragEvent) {
+    //The dataTransfer doesn't have the content for some reason when it is printed out in console with console.log(event);
+    const projectId = event.dataTransfer!.getData("text/plain");
+    projectState.moveProject(
+      projectId,
+      this.type === "active" ? ProjectStatus.ACTIVE : ProjectStatus.FINISHED
+    );
+  }
+
+  @Autobind
+  dragLeaveHandler(_: DragEvent) {
+    const listElement = this.element.querySelector("ul")!;
+    listElement.classList.remove("droppable");
   }
 }
 
