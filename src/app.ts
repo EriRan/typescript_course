@@ -7,6 +7,19 @@
 //We need to get projects fromm input ot list
 //Let's make a class that manages the state of the application like in React!!
 
+//Drag & Drop Interfaces
+interface Draggable {
+  //Two event listeners
+  dragStartHandler(event: DragEvent): void;
+  dragEndHandler(event: DragEvent): void;
+}
+
+interface DragTarget {
+  dragOverHandler(event: DragEvent): void;
+  dropHandler(event: DragEvent): void;
+  dragLeaveHandler(event: DragEvent): void;
+}
+
 //Project type
 //We should tie project under a concrete class
 
@@ -173,7 +186,9 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   //private abstract methods not allowed
 }
 
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem
+  extends Component<HTMLUListElement, HTMLLIElement>
+  implements Draggable {
   private project: Project;
 
   //Getter is like a function for getting a specific value
@@ -187,14 +202,27 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
     super("single-project", hostId, false, project.id);
     this.project = project;
     this.renderContent();
+    this.configure();
   }
 
-  configure() {}
+  configure() {
+    this.element.addEventListener("dragstart", this.dragStartHandler);
+    this.element.addEventListener("dragend", this.dragEndHandler);
+  }
 
   renderContent() {
     this.element.querySelector("h2")!.textContent = this.project.title;
     this.element.querySelector("h3")!.textContent = this.persons + " assigned";
     this.element.querySelector("p")!.textContent = this.project.description;
+  }
+
+  @Autobind
+  dragStartHandler(event: DragEvent) {
+    console.log(event);
+  }
+  @Autobind
+  dragEndHandler(event: DragEvent) {
+    console.log(event);
   }
 }
 
