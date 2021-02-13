@@ -105,6 +105,7 @@ button:active {
 .projects li h3 {
   color: #575757;
   font-size: 1rem;
+  background: white;
 }
 
 .project li p {
