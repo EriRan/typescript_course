@@ -1,7 +1,12 @@
 //Component base class
 //Renderable object
 //Generic class. Inheritors set the concrete classes
-export abstract class Component<T extends HTMLElement, U extends HTMLElement> {
+
+//Export default: You can only have one default exports
+export default abstract class Component<
+  T extends HTMLElement,
+  U extends HTMLElement
+> {
   templateElement: HTMLTemplateElement;
   hostElement: HTMLElement;
   element: HTMLElement;

@@ -1,5 +1,7 @@
-import { Component } from "./base-components.js";
-import { Validatable, validate } from "../util/validation.js";
+//Importing a default export
+import Component from "./base-components.js";
+//Grouping import into one object. This is called alias
+import * as Validation from "../util/validation.js";
 import { Autobind } from "../decorators/autobind.js";
 //Import project state constant
 import { projectState } from "../state/project-state.js";
@@ -35,16 +37,16 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
     const enteredDescription = this.descriptionInputElement.value;
     const enteredPeopleCount = this.peopleInputElement.value;
 
-    const titleValidatable: Validatable = {
+    const titleValidatable: Validation.Validatable = {
       value: enteredTitle,
       required: true,
     };
-    const descriptionValidatable: Validatable = {
+    const descriptionValidatable: Validation.Validatable = {
       value: enteredDescription,
       required: true,
       minLength: 5,
     };
-    const peopleCountValidatable: Validatable = {
+    const peopleCountValidatable: Validation.Validatable = {
       value: +enteredPeopleCount,
       required: true,
       min: 1,
@@ -53,9 +55,9 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
 
     //This is slightly less crappy
     if (
-      !validate(titleValidatable) ||
-      !validate(descriptionValidatable) ||
-      !validate(peopleCountValidatable)
+      !Validation.validate(titleValidatable) ||
+      !Validation.validate(descriptionValidatable) ||
+      !Validation.validate(peopleCountValidatable)
     ) {
       alert("Invalid input. Try again");
       return;
