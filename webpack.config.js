@@ -1,12 +1,14 @@
 const path = require("path");
 
 module.exports = {
+  mode: "development",
   //Entrypoint: We need app.js to be here. This is where webpack starts looking for dependencies
   entry: "./src/app.ts",
   output: {
     //Could have [contenthash] to assist in caching somehow
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
+    publicPath: "dist",
   },
   devtool: "inline-source-map",
   module: {
