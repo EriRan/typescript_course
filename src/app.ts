@@ -1,5 +1,6 @@
 /// <reference path= "drag-drop-interfaces.ts" />
 /// <reference path= "project-model.ts" />
+/// <reference path= "project-state.ts" />
 //^3 forward slashes! This is important and it is not vanilla Javascript
 
 //Namespaces: The imports from a namespace must be in same namespace...?
@@ -10,70 +11,6 @@ namespace App {
   //We will split the file later. Hell yeah in next module we will split all this!!!
   //index.html and a css was provided. We need to write some code to make it all work
   //tsc -w == Quick way to run tsc --watch
-
-  //We need to get projects fromm input ot list
-  //Let's make a class that manages the state of the application like in React!!
-
-  class State<T> {
-    protected listeners: Listener<T>[] = [];
-
-    addListener(listenerFunction: Listener<T>) {
-      this.listeners.push(listenerFunction);
-    }
-  }
-
-  //Project state management
-  //Just a bunch of functions
-  type Listener<T> = (items: T[]) => void;
-
-  class ProjectState extends State<Project> {
-    private projects: Project[] = [];
-
-    private static instance: ProjectState;
-
-    private constructor() {
-      super();
-    }
-
-    static getInstance() {
-      if (this.instance) {
-        return this.instance;
-      }
-      this.instance = new ProjectState();
-      return this.instance;
-    }
-
-    addProject(title: string, description: string, numberOfPeople: number) {
-      const newProject = new Project(
-        Math.random().toString(),
-        title,
-        description,
-        numberOfPeople,
-        ProjectStatus.ACTIVE
-      );
-
-      this.projects.push(newProject);
-      this.updateListeners();
-    }
-
-    //Move project from one list to another
-    moveProject(projectId: string, newStatus: ProjectStatus) {
-      const project = this.projects.find((project) => project.id === projectId);
-      if (project && project.status !== newStatus) {
-        project.status = newStatus;
-        this.updateListeners();
-      }
-    }
-
-    private updateListeners() {
-      for (const listenerFunction of this.listeners) {
-        //Return a copy of the array
-        listenerFunction(this.projects.slice());
-      }
-    }
-  }
-
-  const projectState = ProjectState.getInstance();
 
   //Validation
   interface Validatable {
