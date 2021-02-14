@@ -1,6 +1,7 @@
 /// <reference path= "drag-drop-interfaces.ts" />
 /// <reference path= "project-model.ts" />
 /// <reference path= "project-state.ts" />
+/// <reference path= "validation.ts" />
 //^3 forward slashes! This is important and it is not vanilla Javascript
 
 //Namespaces: The imports from a namespace must be in same namespace...?
@@ -11,39 +12,6 @@ namespace App {
   //We will split the file later. Hell yeah in next module we will split all this!!!
   //index.html and a css was provided. We need to write some code to make it all work
   //tsc -w == Quick way to run tsc --watch
-
-  //Validation
-  interface Validatable {
-    value: string | number;
-    required?: boolean;
-    minLength?: number;
-    maxLength?: number;
-    min?: number;
-    max?: number;
-  }
-
-  //This could be a lot better
-  //MMMMMMMMMMMMMMMEga refactor!!!!!!
-  //weeeee have no tests lol
-  function validate(input: Validatable) {
-    let isValid = true;
-    if (input.required) {
-      isValid = isValid && input.value.toString().trim().length !== 0;
-    }
-    if (input.minLength != null && typeof input.value === "string") {
-      isValid = isValid && input.value.trim().length >= input.minLength;
-    }
-    if (input.maxLength != null && typeof input.value === "string") {
-      isValid = isValid && input.value.trim().length <= input.maxLength;
-    }
-    if (input.min != null && typeof input.value === "number") {
-      isValid = isValid && input.value >= input.min;
-    }
-    if (input.max != null && typeof input.value === "number") {
-      isValid = isValid && input.value <= input.max;
-    }
-    return isValid;
-  }
 
   //Copied from git history hehe
   function Autobind(
