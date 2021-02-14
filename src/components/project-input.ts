@@ -1,10 +1,10 @@
 //Importing a default export
-import Component from "./base-components.js";
+import Component from "./base-components";
 //Grouping import into one object. This is called alias
-import * as Validation from "../util/validation.js";
-import { Autobind } from "../decorators/autobind.js";
+import * as Validation from "../util/validation";
+import { Autobind } from "../decorators/autobind";
 //Import project state constant
-import { projectState } from "../state/project-state.js";
+import { projectState } from "../state/project-state";
 
 //Get access to the template form
 export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {

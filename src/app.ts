@@ -4,8 +4,8 @@
 //Namespaces: The imports from a namespace must be in same namespace...?
 
 //Let's use ES6 modules instead because they are more convenient. The proble is that they only work on modern browsers
-import { ProjectList } from "./components/project-list.js";
-import { ProjectInput } from "./components/project-input.js";
+import { ProjectList } from "./components/project-list";
+import { ProjectInput } from "./components/project-input";
 //We could import the classes like autobind here so that they would be available in the component classes but it is better to have them imported in the classes themselves
 
 //We need to import

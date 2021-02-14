@@ -1,4 +1,4 @@
-import { Project, ProjectStatus } from "../models/project.js";
+import { Project, ProjectStatus } from "../models/project";
 
 //We need to get projects fromm input ot list
 //Let's make a class that manages the state of the application like in React!!
