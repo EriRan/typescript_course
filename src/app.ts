@@ -9,8 +9,6 @@
 
 namespace App {
   //Let's build a small project
-  //Let's write all the code here LOL!
-  //We will split the file later. Hell yeah in next module we will split all this!!!
   //index.html and a css was provided. We need to write some code to make it all work
   //tsc -w == Quick way to run tsc --watch
 
