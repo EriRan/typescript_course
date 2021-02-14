@@ -62,4 +62,6 @@ export class ProjectState extends State<Project> {
   }
 }
 
+//Does this run for once or multiple times?
+//The answer: Runs once for the first importer
 export const projectState = ProjectState.getInstance();
