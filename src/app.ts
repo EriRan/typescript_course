@@ -2,6 +2,7 @@
 /// <reference path= "project-model.ts" />
 /// <reference path= "project-state.ts" />
 /// <reference path= "validation.ts" />
+/// <reference path= "autobind-decorator.ts" />
 //^3 forward slashes! This is important and it is not vanilla Javascript
 
 //Namespaces: The imports from a namespace must be in same namespace...?
@@ -12,29 +13,6 @@ namespace App {
   //We will split the file later. Hell yeah in next module we will split all this!!!
   //index.html and a css was provided. We need to write some code to make it all work
   //tsc -w == Quick way to run tsc --watch
-
-  //Copied from git history hehe
-  function Autobind(
-    _: any, //target, unused
-    _2: string | Symbol | number, //methodName, unused
-    descriptor: PropertyDescriptor
-  ) {
-    //Get the original method
-    const originalMethod = descriptor.value;
-    const adjustedDescriptor: PropertyDescriptor = {
-      //Extra logic when users try to access this property
-      //Getter is triggered by the concrete method
-      //This is some kind of extra layer
-      configurable: true,
-      //I guess enumberable means whether it can be iterated
-      enumerable: false,
-      get() {
-        const boundFunction = originalMethod.bind(this);
-        return boundFunction;
-      },
-    };
-    return adjustedDescriptor;
-  }
 
   //Component base class
   //Renderable object
