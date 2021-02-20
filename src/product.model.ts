@@ -1,7 +1,11 @@
-//I define a class for a product
+import { IsNotEmpty, IsNumber, IsPositive } from "class-validator";
+//Define a class for a product
 
 export class Product {
+  @IsNotEmpty()
   title: string;
+  @IsNumber()
+  @IsPositive()
   price: number;
 
   constructor(title: string, price: number) {
